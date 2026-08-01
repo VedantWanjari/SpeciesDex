@@ -153,6 +153,18 @@ apiRouter.get('/library/:userId', async (req, res, next) => {
   }
 });
 
+apiRouter.delete('/library/:userId/:gbifKey', async (req, res, next) => {
+  try {
+    assertDatabase();
+    const userId = z.string().trim().min(8).max(120).parse(req.params.userId);
+    const gbifKey = z.coerce.number().int().positive().parse(req.params.gbifKey);
+    await LibraryEntry.deleteOne({ userId, speciesCardKey: gbifKey });
+    res.json({ success: true, message: 'Record and all associated photos permanently purged from database.' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 apiRouter.get('/cards/:gbifKey', async (req, res, next) => {
   try {
     assertDatabase();

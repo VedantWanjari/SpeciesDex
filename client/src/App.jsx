@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { captureSpecies, fetchLibrary } from './api.js';
+import { captureSpecies, fetchLibrary, deleteLibraryEntry } from './api.js';
 import CaptureView from './components/CaptureView.jsx';
 import SpeciesCard from './components/SpeciesCard.jsx';
 import CardSkeleton from './components/CardSkeleton.jsx';
@@ -29,6 +29,16 @@ export default function App() {
 
   useEffect(() => { loadLibrary(); }, [loadLibrary]);
 
+  const handleDeleteEntry = async (gbifKey) => {
+    if (!window.confirm('Permanently purge this field record and all associated photos from the database?')) return;
+    try {
+      await deleteLibraryEntry(userId, gbifKey);
+      await loadLibrary();
+    } catch (deleteError) {
+      console.warn('Failed to delete entry:', deleteError.message);
+    }
+  };
+
   const handleCapture = async (imageBase64) => {
     setError('');
     setResult(null);
@@ -55,7 +65,7 @@ export default function App() {
         {!busy && !error && !result && <div className="starter-copy"><p className="eyebrow">FIELD GUIDE · V1.0</p><h2>Every encounter<br />has a story.</h2><p>Snap a nature photo. We canonicalize its species, calculate its true stats, and file it forever in your collection.</p></div>}
       </section>
     </>}
-    {tab === 'library' && <LibraryView library={library} loading={loadingLibrary} onCaptureAgain={() => setTab('capture')} />}
+    {tab === 'library' && <LibraryView library={library} loading={loadingLibrary} onCaptureAgain={() => setTab('capture')} onDeleteEntry={handleDeleteEntry} />}
   </main>;
 }
 

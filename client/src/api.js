@@ -15,3 +15,5 @@ export const captureSpecies = ({ imageBase64, userId, deviceMeta }) => request('
 
 export const fetchLibrary = (userId) => request(`/api/library/${encodeURIComponent(userId)}`);
 
+export const deleteLibraryEntry = (userId, gbifKey) => request(`/api/library/${encodeURIComponent(userId)}/${gbifKey}`, { method: 'DELETE' });
+
