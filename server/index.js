@@ -9,6 +9,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 warnForMissingConfiguration();
 const app = express();
+app.set('trust proxy', 1);
 const allowedOrigins = env.clientOrigin.split(',').map((origin) => origin.trim()).filter(Boolean);
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));

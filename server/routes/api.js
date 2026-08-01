@@ -91,7 +91,6 @@ async function attachPhoto({ userId, gbifKey, imageBase64, deviceMeta }) {
   const entry = await LibraryEntry.findOneAndUpdate(
     { userId, speciesCardKey: gbifKey },
     {
-      $setOnInsert: { capturedAt: capture.capturedAt },
       $set: { userPhotoUrl: imageBase64, deviceMeta, capturedAt: capture.capturedAt },
       $push: { photos: { $each: [capture], $slice: -12 } }
     },
