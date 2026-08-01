@@ -2,7 +2,7 @@
 
 SpeciesDex turns a wildlife photo into one flippable collectible card: an original comic persona on the front and reproducible field-guide game stats on the back. It is a React/Vite + Express/MongoDB project intended for a Render static site, Render web service, and MongoDB Atlas M0 deployment.
 
-**This project was built for the ChatGPT CODEX INDIA HACKATHON 2026.**  
+##This project was built for the ChatGPT CODEX INDIA HACKATHON 2026.
 Most of the code was generated using **OpenAI Codex**, demonstrating agentic coding and AI-assisted development.
 
 
