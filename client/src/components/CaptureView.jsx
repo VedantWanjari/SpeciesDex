@@ -4,25 +4,37 @@ export default function CaptureView({ onCapture, busy }) {
   const videoRef = useRef(null);
   const uploadRef = useRef(null);
   const [cameraState, setCameraState] = useState('starting');
+  const [stream, setStream] = useState(null);
 
   useEffect(() => {
-    let stream;
+    let activeStream;
     async function startCamera() {
       if (!navigator.mediaDevices?.getUserMedia) return setCameraState('unavailable');
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1440 }, height: { ideal: 1920 } }, audio: false });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
+        try {
+          activeStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1440 }, height: { ideal: 1920 } },
+            audio: false
+          });
+        } catch {
+          activeStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         }
+        setStream(activeStream);
         setCameraState('ready');
       } catch {
         setCameraState('unavailable');
       }
     }
     startCamera();
-    return () => stream?.getTracks().forEach((track) => track.stop());
+    return () => activeStream?.getTracks().forEach((track) => track.stop());
   }, []);
+
+  useEffect(() => {
+    if (stream && videoRef.current) {
+      videoRef.current.srcObject = stream;
+      videoRef.current.play().catch((err) => console.warn('Video play error:', err));
+    }
+  }, [stream, cameraState]);
 
   const takePhoto = () => {
     const video = videoRef.current;
@@ -49,7 +61,7 @@ export default function CaptureView({ onCapture, busy }) {
 
   return <section className="capture-panel">
     <div className="camera-frame">
-      {cameraState === 'ready' && <video ref={videoRef} playsInline muted />}
+      {cameraState === 'ready' && <video ref={videoRef} playsInline autoPlay muted />}
       {cameraState !== 'ready' && <div className="camera-fallback"><span>⌁</span><p>{cameraState === 'starting' ? 'Opening your field lens…' : 'Camera unavailable'}</p><small>Choose a wildlife photo from your gallery.</small></div>}
       <div className="viewfinder"><span /><span /><span /><span /></div>
       <div className="camera-copy"><p>SPECIESDEX · FIELD LENS</p><h1>What wild thing<br />did you find?</h1></div>
@@ -63,4 +75,3 @@ export default function CaptureView({ onCapture, busy }) {
     <p className="capture-note">One sighting, one card. More photos add to its field record.</p>
   </section>;
 }
-
