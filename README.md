@@ -6,6 +6,11 @@ SpeciesDex turns a wildlife photo into one flippable collectible card: an origin
 
 Most of the code was generated using **OpenAI Codex**, showcasing agentic coding and AI‑assisted development.
 
+## 🚀 Live Demo
+
+The project is hosted on **Render**:  
+👉 [speciesdex-web.onrender.com](https://speciesdex-web.onrender.com/)
+
 
 
 ## Why the cards stay fair
