@@ -10,6 +10,10 @@ export default function CaptureView({ onCapture, busy }) {
     let activeStream;
     async function startCamera() {
       if (!navigator.mediaDevices?.getUserMedia) return setCameraState('unavailable');
+      if (typeof window?.confirm === 'function' && !window.confirm('Allow camera access now?')) {
+        setCameraState('unavailable');
+        return;
+      }
       try {
         try {
           activeStream = await navigator.mediaDevices.getUserMedia({
